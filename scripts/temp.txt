@@ -1,0 +1,8 @@
+// "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+// "@nomiclabs/hardhat-ethers": "^2.2.3",
+// "dotenv": "^16.4.5",
+// "ethers": "^5.7.2",
+// "hardhat": "^2.21.0"
+// "@openzeppelin/contracts": "^5.0.2"
+
+MetaSaga deployed to: 0x24840eF2E1bfAE95F640c40c144A727464Dde098

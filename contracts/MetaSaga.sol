@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -17,7 +16,11 @@ contract MetaSaga is ERC721URIStorage, Ownable {
     // Price to draw a card
     uint256 public constant drawPrice = 0.0001 ether;
 
-    constructor() {
+    constructor(
+        string memory name,
+        string memory symbol,
+        address initialOwner
+    ) ERC721(name, symbol) Ownable(initialOwner) {
         _tokenIdCounter = 1; // Start token ID count from 1
     }
 
@@ -53,35 +56,21 @@ contract MetaSaga is ERC721URIStorage, Ownable {
     ) private pure returns (string memory) {
         bytes memory hexString = new bytes(64);
         for (uint i = 0; i < 32; i++) {
-            byte b = _bytes[i];
-            byte high = byte(uint8(b) / 16);
-            byte low = byte(uint8(b) - 16 * uint8(high));
+            uint8 b = uint8(_bytes[i]);
+            uint8 high = b / 16;
+            uint8 low = b - high * 16;
             hexString[2 * i] = convertDigitToHex(high);
             hexString[2 * i + 1] = convertDigitToHex(low);
         }
         return string(hexString);
     }
 
-    function convertDigitToHex(byte _digit) private pure returns (byte) {
-        if (uint8(_digit) < 10) {
-            return byte(uint8(_digit) + 48);
+    function convertDigitToHex(uint8 _digit) private pure returns (bytes1) {
+        if (_digit < 10) {
+            return bytes1(uint8(_digit) + 48); // 48 is ASCII for '0'
         } else {
-            return byte(uint8(_digit) + 87);
+            return bytes1(uint8(_digit) + 87); // 87 = ASCII for 'a' - 10
         }
-    }
-
-    function getUserCards(address user) public view returns (string[] memory) {
-        if (userCards[user].length == 0) {
-            userCards[user] = new uint256[](0); // Initialize for new user
-        }
-
-        uint256[] memory ownedTokenIds = userCards[user];
-        string[] memory cardURIs = new string[](ownedTokenIds.length);
-        for (uint i = 0; i < ownedTokenIds.length; i++) {
-            cardURIs[i] = tokenURI(ownedTokenIds[i]);
-        }
-
-        return cardURIs;
     }
 
     function tokenURI(
